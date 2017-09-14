@@ -15,12 +15,16 @@ static inline bool match_packet(struct nft_abcde *priv, struct sk_buff *skb) {
 	char *p;
 
 	for (p = user_data; p < tail - priv->len; p++) {
-		int i;
+		int i; bool found = true;
 		for (i = 0; i < priv->len; i++)
-			if (p[i] != priv->text[i])
-				return false;
+			if (p[i] != priv->text[i]) {
+				found = false;
+				break;
+			}
+		if (found)
+			return true;
 	}
-	return true;
+	return false;
 }
 
 static const struct nla_policy nft_abcde_policy[NFTA_ABCDE_MAX + 1] = {
